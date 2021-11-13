@@ -86,7 +86,8 @@ describe('Basic user flow for Website', () => {
     // Check to see if the innerText of #cart-count is 20
     const count = await page.$('#cart-count');
     const innertxt = await count.getProperty('innerText');
-    expect(innertxt['_remoteObject'].value).toBe("20");
+    const txtcmp20 = innertxt['_remoteObject'].value;
+    expect(txtcmp20).toBe("20");
 
   }, 10000);
 
