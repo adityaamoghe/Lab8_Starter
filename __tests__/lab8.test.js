@@ -26,7 +26,7 @@ describe('Basic user flow for Website', () => {
     let size = prodItems.length;
 
     for(let iterator = 0; iterator < size; iterator++){
-      console.log(`Checking product item 1/${prodItems.length}`);
+      console.log(`Checking product item ${iterator + 1}/${prodItems.length}`);
       // Grab the .data property of <product-items> to grab all of the json data stored inside
       data = await prodItems[0].getProperty('data');
       // Convert that property to JSON
@@ -124,8 +124,13 @@ describe('Basic user flow for Website', () => {
   // Check to make sure that the cart in localStorage is what you expect
   it('Checking the localStorage to make sure cart is correct', async () => {
     // TODO - Step 5
-    // At this point he item 'cart' in localStorage should be 
+
+    // At this point the item 'cart' in localStorage should be 
+    const localStorage = await page.evaluate(()=> Object.assign({}, window.localStorage));
+    
     // '[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]', check to make sure it is
+    expect(localStorage.cart).toBe('[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]');
+
   });
 
   // Checking to make sure that if you remove all of the items from the cart that the cart
