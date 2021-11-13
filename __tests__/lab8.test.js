@@ -52,11 +52,16 @@ describe('Basic user flow for Website', () => {
     console.log('Checking the "Add to Cart" button...');
     // TODO - Step 2
     // Query a <product-item> element using puppeteer ( checkout page.$() and page.$$() in the docs )
+    const prodItem = await page.$('product-item');
     // Grab the shadowRoot of that element (it's a property), then query a button from that shadowRoot.
+    const shadowRoot = await prodItem[0].getProperty('shadowRoot');
+    const button = await shadowRoot.$('button');
     // Once you have the button, you can click it and check the innerText property of the button.
+    const innertxt = await button.getProperty('innerText');
     // Once you have the innerText property, use innerText['_remoteObject'].value to get the text value of it
-
+    const textVal = innertxt['_remoteObject'].value;
     
+
 
 
 
@@ -67,9 +72,22 @@ describe('Basic user flow for Website', () => {
   it('Checking number of items in cart on screen', async () => {
     console.log('Checking number of items in cart on screen...');
     // TODO - Step 3
+
+    const prodItem = await page.$$('product-item');
+    let size = prodItem.length;
+
     // Query select all of the <product-item> elements, then for every single product element
     // get the shadowRoot and query select the button inside, and click on it.
+    for(let iterator = 1; iterator < size; iterator++){
+      let shadowRoot_prodItem = await prodItem[iterator].getProperty('shadowRoot'); 
+      let button = await shadowRoot.$('button');
+      await button.click();
+    }
     // Check to see if the innerText of #cart-count is 20
+    const count = await page.$('#cart-count');
+    const innertxt = await count.getProperty('innerText');
+    expect(innertxt['_remoteObject'].value).toBe("20");
+
   }, 10000);
 
   // Check to make sure that after you reload the page it remembers all of the items in your cart
@@ -79,6 +97,12 @@ describe('Basic user flow for Website', () => {
     // Reload the page, then select all of the <product-item> elements, and check every
     // element to make sure that all of their buttons say "Remove from Cart".
     // Also check to make sure that #cart-count is still 20
+
+    
+
+
+
+
   }, 10000);
 
   // Check to make sure that the cart in localStorage is what you expect
