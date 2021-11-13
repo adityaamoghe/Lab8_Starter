@@ -50,7 +50,7 @@ describe('Basic user flow for Website', () => {
   // the button swaps to "Remove from Cart"
   it('Clicking the "Add to Cart" button should change button text', async () => {
     console.log('Checking the "Add to Cart" button...');
-    // TODO - Step 2
+    // Step 2
     // Query a <product-item> element using puppeteer ( checkout page.$() and page.$$() in the docs )
     const prodItem = await page.$('product-item');
     // Grab the shadowRoot of that element (it's a property), then query a button from that shadowRoot.
@@ -71,7 +71,7 @@ describe('Basic user flow for Website', () => {
   // number in the top right has been correctly updated
   it('Checking number of items in cart on screen', async () => {
     console.log('Checking number of items in cart on screen...');
-    // TODO - Step 3
+    // Step 3
 
     const prodItem = await page.$$('product-item');
     let size = prodItem.length;
@@ -94,7 +94,7 @@ describe('Basic user flow for Website', () => {
   // Check to make sure that after you reload the page it remembers all of the items in your cart
   it('Checking number of items in cart on screen after reload', async () => {
     console.log('Checking number of items in cart on screen after reload...');
-    // TODO - Step 4
+    // Step 4
     // Reload the page, then select all of the <product-item> elements, and check every
     // element to make sure that all of their buttons say "Remove from Cart".
     // Also check to make sure that #cart-count is still 20
@@ -123,7 +123,7 @@ describe('Basic user flow for Website', () => {
 
   // Check to make sure that the cart in localStorage is what you expect
   it('Checking the localStorage to make sure cart is correct', async () => {
-    // TODO - Step 5
+    // Step 5
 
     // At this point the item 'cart' in localStorage should be 
     const localStorage = await page.evaluate(()=> Object.assign({}, window.localStorage));
@@ -137,9 +137,23 @@ describe('Basic user flow for Website', () => {
   // number in the top right of the screen is 0
   it('Checking number of items in cart on screen after removing from cart', async () => {
     console.log('Checking number of items in cart on screen...');
-    // TODO - Step 6
+    // Step 6
+
     // Go through and click "Remove from Cart" on every single <product-item>, just like above.
-    // Once you have, check to make sure that #cart-count is now 0
+    const prodItem = await page.$$('product-item');
+    let size = prodItem.length;
+
+    for(let iterator = 1; iterator < size; iterator++){
+      let shadowRoot_prodItem = await prodItem[iterator].getProperty('shadowRoot'); 
+      let button = await shadowRoot_prodItem.$('button');
+      await button.click();
+    }
+    // Check to see if the innerText of #cart-count is 0
+    const count = await page.$('#cart-count');
+    const innertxt = await count.getProperty('innerText');
+    const txtcmp0 = innertxt['_remoteObject'].value;
+    expect(txtcmp0).toBe("0");
+
   }, 10000);
 
   // Checking to make sure that it remembers us removing everything from the cart
@@ -150,6 +164,27 @@ describe('Basic user flow for Website', () => {
     // Reload the page once more, then go through each <product-item> to make sure that it has remembered nothing
     // is in the cart - do this by checking the text on the buttons so that they should say "Add to Cart".
     // Also check to make sure that #cart-count is still 0
+
+    //Reload the page once more
+    await page.reload();
+    const prodItem = await page.$$('product-item');
+    let size = prodItem.length;
+
+    //Go through each <product-item> to make sure that it has remembered nothing is in the cart
+    for(let iterator = 0; iterator < size; iterator++){
+      let shadowRoot_prodItem = await prodItem[iterator].getProperty('shadowRoot'); 
+      const button = await shadowRoot_prodItem.$('button');
+      const innertxt = await button.getProperty('innerText');
+      const txtcmpRmCart = innertxt['_remoteObject'].value;
+      expect(txtcmpRmCart).toBe("Add to Cart");
+    }
+
+    // Check to see if the innerText of #cart-count is 0
+    const count = await page.$('#cart-count');
+    const innertxt = await count.getProperty('innerText');
+    const txtcmp0 = innertxt['_remoteObject'].value;
+    expect(txtcmp0).toBe("0");
+
   }, 10000);
 
   // Checking to make sure that localStorage for the cart is as we'd expect for the
@@ -158,5 +193,9 @@ describe('Basic user flow for Website', () => {
     console.log('Checking the localStorage...');
     // TODO - Step 8
     // At this point he item 'cart' in localStorage should be '[]', check to make sure it is
+
+    const localStorage = await page.evaluate(()=> Object.assign({}, window.localStorage));
+    expect(localStorage.cart).toBe('[]');
+
   });
 });
