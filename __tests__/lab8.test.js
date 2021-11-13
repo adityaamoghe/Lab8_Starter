@@ -28,7 +28,7 @@ describe('Basic user flow for Website', () => {
     for(let iterator = 0; iterator < size; iterator++){
       console.log(`Checking product item ${iterator + 1}/${prodItems.length}`);
       // Grab the .data property of <product-items> to grab all of the json data stored inside
-      data = await prodItems[0].getProperty('data');
+      data = await prodItems[iterator].getProperty('data');
       // Convert that property to JSON
       plainValue = await data.jsonValue();
       // Make sure the title, price, and image are populated in the JSON
@@ -56,12 +56,13 @@ describe('Basic user flow for Website', () => {
     // Grab the shadowRoot of that element (it's a property), then query a button from that shadowRoot.
     const shadowRoot = await prodItem.getProperty('shadowRoot');
     const button = await shadowRoot.$('button');
+    await button.click();
     // Once you have the button, you can click it and check the innerText property of the button.
     const innertxt = await button.getProperty('innerText');
     // Once you have the innerText property, use innerText['_remoteObject'].value to get the text value of it
     const textVal = innertxt['_remoteObject'].value;
     
-
+    expect(textVal).toBe("Remove from Cart");
 
 
 
@@ -143,7 +144,7 @@ describe('Basic user flow for Website', () => {
     const prodItem = await page.$$('product-item');
     let size = prodItem.length;
 
-    for(let iterator = 1; iterator < size; iterator++){
+    for(let iterator = 0; iterator < size; iterator++){
       let shadowRoot_prodItem = await prodItem[iterator].getProperty('shadowRoot'); 
       let button = await shadowRoot_prodItem.$('button');
       await button.click();
