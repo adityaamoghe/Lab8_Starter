@@ -54,7 +54,7 @@ describe('Basic user flow for Website', () => {
     // Query a <product-item> element using puppeteer ( checkout page.$() and page.$$() in the docs )
     const prodItem = await page.$('product-item');
     // Grab the shadowRoot of that element (it's a property), then query a button from that shadowRoot.
-    const shadowRoot = await prodItem[0].getProperty('shadowRoot');
+    const shadowRoot = await prodItem.getProperty('shadowRoot');
     const button = await shadowRoot.$('button');
     // Once you have the button, you can click it and check the innerText property of the button.
     const innertxt = await button.getProperty('innerText');
@@ -80,7 +80,7 @@ describe('Basic user flow for Website', () => {
     // get the shadowRoot and query select the button inside, and click on it.
     for(let iterator = 1; iterator < size; iterator++){
       let shadowRoot_prodItem = await prodItem[iterator].getProperty('shadowRoot'); 
-      let button = await shadowRoot.$('button');
+      let button = await shadowRoot_prodItem.$('button');
       await button.click();
     }
     // Check to see if the innerText of #cart-count is 20
@@ -98,7 +98,7 @@ describe('Basic user flow for Website', () => {
     // element to make sure that all of their buttons say "Remove from Cart".
     // Also check to make sure that #cart-count is still 20
 
-    
+
 
 
 
