@@ -99,10 +99,25 @@ describe('Basic user flow for Website', () => {
     // element to make sure that all of their buttons say "Remove from Cart".
     // Also check to make sure that #cart-count is still 20
 
+    //Reload the page
+    await page.reload();
 
+    const prodItem = await page.$$('product-item');
+    let size = prodItem.length;
 
+    for(let iterator = 0; iterator < size; iterator++){
+      let shadowRoot_prodItem = await prodItem[iterator].getProperty('shadowRoot'); 
+      const button = await shadowRoot_prodItem.$('button');
+      const innertxt = await button.getProperty('innerText');
+      const txtcmpRmCart = innertxt['_remoteObject'].value;
+      expect(txtcmpRmCart).toBe("Remove from Cart");
+    }
 
-
+    // Check to see if the innerText of #cart-count is 20
+    const count = await page.$('#cart-count');
+    const innertxt = await count.getProperty('innerText');
+    const txtcmp20 = innertxt['_remoteObject'].value;
+    expect(txtcmp20).toBe("20");
 
   }, 10000);
 
